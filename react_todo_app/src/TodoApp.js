@@ -11,7 +11,13 @@ const TodoApp = () => {
 
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/todos/')
-            .then(response => setTodos(response.data))
+            .then(response => {
+                const todosWithCheckState = response.data.map(todo => ({
+                    ...todo,
+                    isChecked: todo.completed // Initialise `isChecked` avec la valeur de `completed`
+                }));
+                setTodos(todosWithCheckState);
+            })
             .catch(error => console.error('Erreur lors du chargement des todos:', error));
     }, []);
 
@@ -29,12 +35,25 @@ const TodoApp = () => {
             .catch(error => console.error('Erreur lors de la suppression du todo:', error));
     };
 
-    const toggleTodo = (id, completed) => {
-        axios.put(`http://127.0.0.1:8000/api/todos/${id}/`, { completed: !completed })
-            .then(response => {
-                setTodos(todos.map(todo => todo.id === id ? response.data : todo));
-            })
-            .catch(error => console.error('Erreur lors de la mise à jour du todo:', error));
+    const toggleTodo = (id, isChecked) => {
+        const updatedTodos = todos.map(todo => {
+            if (todo.id === id) {
+                const updatedTodo = { ...todo, isChecked: !isChecked };
+                console.log(updatedTodo.isChecked)
+                axios.put(`http://127.0.0.1:8000/api/todos/${id}/`, {
+                    title: updatedTodo.title,
+                    completed: updatedTodo.isChecked
+                })
+                .then(response => {
+                        // Mettez à jour l'état complet du todo après la réponse du serveur
+                        return response.data;
+                    })
+                    .catch(error => console.error('Erreur lors de la mise à jour du todo:', error));
+                return updatedTodo;
+            }
+            return todo;
+        });
+        setTodos(updatedTodos); // Mettre à jour l'état local
     };
 
     const handleEdit = (id, title) => {
@@ -56,6 +75,13 @@ const TodoApp = () => {
         if (event.key === 'Enter') {
             handleSave(id);
         }
+    };
+
+    const [isChecked, setIsChecked] = useState(false); // État pour contrôler le checkbox
+
+    const handleCheckboxChange = () => {
+        setIsChecked(!isChecked);
+        console.log(!isChecked);
     };
 
     return (
@@ -81,8 +107,8 @@ const TodoApp = () => {
                                         <>
                                             <input
                                                 type="checkbox"
-                                                checked={todo.completed}
-                                                onChange={() => toggleTodo(todo.id, todo.completed)}
+                                                checked={todo.isChecked}
+                                                onChange={() => toggleTodo(todo.id, todo.isChecked)}
                                                 className="mr-3"
                                             />
                                             <span className = 'ms-3'
@@ -113,6 +139,14 @@ const TodoApp = () => {
                     </div>
                 </div>
             </div>
+            <div>
+            <input
+                type="checkbox"
+                checked={isChecked}  // Contrôlé par l'état `isChecked`
+                onChange={handleCheckboxChange}  // Appelle `handleCheckboxChange` lors du changement
+            />
+            <label className="ms-3">Checkbox</label>
+        </div>
         </div>
     );
 };
