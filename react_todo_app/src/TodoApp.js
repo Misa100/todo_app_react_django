@@ -139,14 +139,14 @@ const TodoApp = () => {
                     </div>
                 </div>
             </div>
-            <div>
+        {/* <div>
             <input
                 type="checkbox"
                 checked={isChecked}  // Contrôlé par l'état `isChecked`
                 onChange={handleCheckboxChange}  // Appelle `handleCheckboxChange` lors du changement
             />
             <label className="ms-3">Checkbox</label>
-        </div>
+        </div> */}
         </div>
     );
 };
