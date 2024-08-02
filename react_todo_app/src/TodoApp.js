@@ -7,6 +7,7 @@ const TodoApp = () => {
     const [todos, setTodos] = useState([]);
     const [editingTodoId, setEditingTodoId] = useState(null);
     const [newTitle, setNewTitle] = useState('');
+    const [editTitle, setEditTitle] = useState('');
 
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/todos/')
@@ -36,19 +37,25 @@ const TodoApp = () => {
             .catch(error => console.error('Erreur lors de la mise à jour du todo:', error));
     };
 
-    const startEditing = (id, currentTitle) => {
+    const handleEdit = (id, title) => {
         setEditingTodoId(id);
-        setNewTitle(currentTitle);
+        setEditTitle(title);
     };
 
-    const saveTitle = (id) => {
-        axios.put(`http://127.0.0.1:8000/api/todos/${id}/`, { title: newTitle })
+    const handleSave = (id) => {
+        axios.put(`http://127.0.0.1:8000/api/todos/${id}/`, { title: editTitle })
             .then(response => {
                 setTodos(todos.map(todo => todo.id === id ? response.data : todo));
                 setEditingTodoId(null);
-                setNewTitle('');
+                setEditTitle('');
             })
             .catch(error => console.error('Erreur lors de la mise à jour du titre:', error));
+    };
+
+    const handleKeyDown = (event, id) => {
+        if (event.key === 'Enter') {
+            handleSave(id);
+        }
     };
 
     return (
@@ -63,9 +70,12 @@ const TodoApp = () => {
                                     {editingTodoId === todo.id ? (
                                         <input
                                             type="text"
-                                            value={newTitle}
-                                            onChange={(e) => setNewTitle(e.target.value)}
+                                            value={editTitle}
+                                            onChange={(e) => setEditTitle(e.target.value)}
+                                            onKeyDown={(e) => handleKeyDown(e, todo.id)}
+                                            onBlur={() => handleSave(todo.id)}
                                             className="form-control"
+                                            autoFocus
                                         />
                                     ) : (
                                         <>
@@ -75,22 +85,14 @@ const TodoApp = () => {
                                                 onChange={() => toggleTodo(todo.id, todo.completed)}
                                                 className="mr-3"
                                             />
-                                            <span className='ms-3'
+                                            <span className = 'ms-3'
+                                            onClick={() => handleEdit(todo.id, todo.title)}
                                             >
                                                 {todo.title}
                                             </span>
                                         </>
                                     )}
                                 </div>
-                                {editingTodoId === todo.id ? (
-                                    <button className="btn btn-success btn-sm" onClick={() => saveTitle(todo.id)}>
-                                        Save
-                                    </button>
-                                ) : (
-                                    <button className="btn btn-outline-primary btn-sm" onClick={() => startEditing(todo.id, todo.title)}>
-                                        Edit
-                                    </button>
-                                )}
                                 <button className="btn btn-outline-danger btn-sm" onClick={() => deleteTodo(todo.id)} aria-label="Delete todo">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -101,7 +103,7 @@ const TodoApp = () => {
                         <input
                             type="text"
                             className="form-control"
-                            value={newTitle}
+                            // value={newTitle}
                             onChange={e => setNewTitle(e.target.value)}
                             placeholder="Add a new task..."
                         />
