@@ -5,6 +5,8 @@ import TodoForm from './TodoForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/TodoApp.css';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const TodoApp = () => {
     const [todos, setTodos] = useState([]);
     const [editingTodoId, setEditingTodoId] = useState(null);
@@ -12,7 +14,7 @@ const TodoApp = () => {
     const [editTitle, setEditTitle] = useState('');
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/todos/')
+        axios.get(`${API_URL}/todos/`)
             .then(response => {
                 const todosWithCheckState = response.data.map(todo => ({
                     ...todo,
@@ -25,14 +27,14 @@ const TodoApp = () => {
 
     const addTodo = () => {
         if (newTitle.trim() === '') return;
-        axios.post('http://127.0.0.1:8000/api/todos/', { title: newTitle, completed: false })
+        axios.post(`${API_URL}/todos/`, { title: newTitle, completed: false })
             .then(response => setTodos([...todos, response.data]))
             .catch(error => console.error('Erreur lors de l\'ajout du todo:', error));
         setNewTitle('');
     };
 
     const deleteTodo = (id) => {
-        axios.delete(`http://127.0.0.1:8000/api/todos/${id}/`)
+        axios.delete(`${API_URL}/todos/${id}/`)
             .then(() => setTodos(todos.filter(todo => todo.id !== id)))
             .catch(error => console.error('Erreur lors de la suppression du todo:', error));
     };
@@ -41,7 +43,7 @@ const TodoApp = () => {
         const updatedTodos = todos.map(todo => {
             if (todo.id === id) {
                 const updatedTodo = { ...todo, isChecked: !isChecked };
-                axios.put(`http://127.0.0.1:8000/api/todos/${id}/`, {
+                axios.put(`${API_URL}/todos/${id}/`, {
                     title: updatedTodo.title,
                     completed: updatedTodo.isChecked
                 })
@@ -63,7 +65,7 @@ const TodoApp = () => {
     };
 
     const handleSave = (id) => {
-        axios.put(`http://127.0.0.1:8000/api/todos/${id}/`, { title: editTitle })
+        axios.put(`${API_URL}/todos/${id}/`, { title: editTitle })
             .then(response => {
                 setTodos(todos.map(todo => todo.id === id ? response.data : todo));
                 setEditingTodoId(null);
