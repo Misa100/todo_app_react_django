@@ -87,9 +87,9 @@ const TodoApp = () => {
                 <div className="card-body">
                     <ul className="list-group mb-3">
                         {todos.map(todo => (
-                            <TodoItem 
-                                key={todo.id} 
-                                todo={todo} 
+                            <TodoItem
+                                key={todo.id}
+                                todo={todo}
                                 isEditing={editingTodoId === todo.id}
                                 editTitle={editTitle}
                                 onEdit={handleEdit}
@@ -101,10 +101,10 @@ const TodoApp = () => {
                             />
                         ))}
                     </ul>
-                    <TodoForm 
-                        newTitle={newTitle} 
-                        setNewTitle={setNewTitle} 
-                        onAdd={addTodo} 
+                    <TodoForm
+                        newTitle={newTitle}
+                        setNewTitle={setNewTitle}
+                        onAdd={addTodo}
                     />
                 </div>
             </div>
