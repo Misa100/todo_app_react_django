@@ -6,12 +6,25 @@ body {
     min-height: 100vh;
 }
 
-.todo-container {
-    max-width: 400px;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    background-color: #f8f9fa;
+@media (min-width: 768px) {
+    .todo-container {
+        width: 450px;
+        max-width: none;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+    }
+}
+
+@media (max-width: 768px) {
+    .todo-container {
+        width: 320px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+    }
 }
 
 .todo-title {
