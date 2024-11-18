@@ -1,20 +1,17 @@
 version: '3'
 
 services:
-  # Service pour Django
   django:
     build:
       context: ./django_todo_project  # Indique où se trouve le Dockerfile
     volumes:
       - ./django_todo_project:/app  # Monter le volume pour le code
-      - todo_app_react_django_django_data:/app/db.sqlite3
+      - todo_app_react_django_django_data:/app/db.sqlite3  # Monter la base de données SQLite
     ports:
       - "8000:8000"  # Mappe le port 8000 de votre machine au port 8000 du container
     environment:
       - DEBUG=True  # Définir les variables d'environnement pour Django
       - DATABASE_URL=sqlite:///db.sqlite3  # Définir la base de données SQLite pour Django
-    command: >
-      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"  # Initialiser DB et démarrer le serveur
 
 volumes:
-  django_data:  # Volume Docker pour la base de données SQLite
+  todo_app_react_django_django_data: {}  # Définir le volume
