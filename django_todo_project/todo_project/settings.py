@@ -132,5 +132,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://todo-app-react-django.vercel.app",
-    "https://remarkable-magic-production-c110.up.railway.app"
 ]
