@@ -1,6 +1,9 @@
 # Utilisez une image Python officielle comme base
 FROM python:3.9-slim
 
+# Mettre à jour les paquets et installer sqlite3
+RUN apt-get update && apt-get install -y sqlite3
+
 # Définir le répertoire de travail
 WORKDIR /app
 
