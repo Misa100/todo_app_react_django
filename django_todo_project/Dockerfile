@@ -1,23 +1,20 @@
-# Utilisez une image Python officielle comme base
+# Utiliser une image de base Python 3.9 slim
 FROM python:3.9-slim
 
-# Mettre à jour les paquets et installer sqlite3
-RUN apt-get update && apt-get install -y sqlite3 && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Définir le répertoire de travail
+# Définir le répertoire de travail à /app
 WORKDIR /app
 
 # Copier uniquement le fichier de configuration des dépendances (requirements.txt)
-COPY requirements.txt /app/
+COPY ./requirements.txt /app/
 
 # Installer les dépendances de l'application
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copier tout le code du projet dans le container
+# Copier le reste des fichiers de l'application dans /app
 COPY . /app/
 
-# Exposer le port 8000 (ou le port utilisé par votre application)
+# Exposer le port 8000 pour l'application Django
 EXPOSE 8000
 
-# Commande par défaut pour exécuter l'application
+# Lancer le serveur Django
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
